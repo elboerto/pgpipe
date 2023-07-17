@@ -1,0 +1,36 @@
+name: "Test Action"
+description: "Tests a python project by checking style with ruff and black and testing with mypy and pytest."
+
+inputs:
+  path:
+    description: "Project Path"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Set up poetry
+      shell: bash
+      run: |
+        cd ${{ inputs.path }}
+        pip install poetry
+    - name: Install package
+      shell: bash
+      run: |
+        cd ${{ inputs.path }}
+        poetry install --no-interaction --no-root
+    - name: Style check
+      shell: bash
+      run: |
+        cd ${{ inputs.path }}
+        poetry run poe style:check
+    - name: Test (mypy and pytest)
+      shell: bash
+      run: |
+        cd ${{ inputs.path }}
+        poetry run poe test

@@ -1,0 +1,77 @@
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "pgpipe"
+version = "1.0.5"
+description = ""
+authors = ["Robert Rode <github@robertrode.com>"]
+readme = "README.md"
+
+[tool.poetry.scripts]
+pgpipe = 'pgpipe.cli:run'
+
+[tool.poetry.dependencies]
+python = "^3.9"
+psycopg = {extras = ["binary"], version = "^3.1.9"}
+pydantic = "^2.0.3"
+loguru = "^0.7.0"
+pydantic-settings = "^2.0.2"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.3.1"
+flake8 = "^6.0.0"
+mypy = "^1.4.1"
+black = "^23.7.0"
+ruff = "^0.0.278"
+poethepoet = "^0.21.1"
+
+[tool.poe.tasks]
+"_black:check" = "poetry run black . --check"
+"_black:fix" = "poetry run black ."
+
+"_ruff:check" = "poetry run ruff ."
+"_ruff:fix" = "poetry run ruff --fix ."
+
+"style:check" = { sequence = [
+  "_black:check",
+  "_ruff:check",
+], help = "Check the app code style " }
+
+"style:fix" = { sequence = [
+  "_black:fix",
+  "_ruff:fix",
+], help = "Check and autofix the app code style " }
+
+"_mypy" = "poetry run mypy ."
+"_pytest" = "poetry run pytest ."
+
+"test" = { sequence = [
+  "_mypy",
+  "_pytest",
+], help = "Check and autofix the app code style " }
+
+[tool.ruff]
+select = ["F", "E", "W", "I001"]
+line-length = 120
+show-fixes = false
+target-version = "py311"
+
+[tool.ruff.isort]
+known-first-party = []
+known-third-party = []
+section-order = [
+    "future",
+    "standard-library",
+    "third-party",
+    "first-party",
+    "local-folder",
+]
+combine-as-imports = true
+split-on-trailing-comma = false
+lines-between-types = 1
+
+[tool.black]
+line-length = 120
+target-version = ["py311"]

@@ -1,0 +1,38 @@
+name: "Build package"
+description: "Build and publish a python package with poetry."
+
+inputs:
+  path:
+    description: "Project Path"
+    required: true
+  repository_name:
+    description: "Repository name"
+    required: true
+  repository_url:
+    description: "Repository URL"
+    required: true
+  repository_token:
+    description: "Repository token"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v3
+    - name: Set up poetry
+      shell: bash
+      run: |
+        cd ${{ inputs.path }}
+        pip install poetry
+    - name: Build with poetry
+      shell: bash
+      run: |
+        cd ${{ inputs.path }}
+        poetry build
+    - name: Publish with poetry
+      shell: bash
+      run: |
+        cd ${{ inputs.path }}
+        poetry config repositories.${{ inputs.repository_name }} ${{ inputs.repository_url }}
+        poetry config pypi-token.${{ inputs.repository_name }} ${{ inputs.repository_token }}
+        poetry publish -r ${{ inputs.repository_name }}

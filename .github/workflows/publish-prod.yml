@@ -1,0 +1,32 @@
+name: TestPyPI
+
+on:
+  push:
+    tags:
+      - 'v*-test'
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11']
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/test
+        with:
+          path: pgpipe
+
+  build_and_publish:
+    name: Build and publish to pypi.org
+    needs: ['test']
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/build_and_publish
+        with:
+          path: pgpipe
+          repository_name: test-pypi
+          repository_url: https://pypi.org
+          repository_token: ${{ secrets.PYPI_API_TOKEN }}
