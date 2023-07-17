@@ -28,5 +28,5 @@ jobs:
         with:
           path: pgpipe
           repository_name: test-pypi
-          repository_url: https://pypi.org
+          repository_url: https://pypi.org/pypi
           repository_token: ${{ secrets.PYPI_API_TOKEN }}
