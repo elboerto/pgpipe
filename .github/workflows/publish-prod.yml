@@ -3,7 +3,7 @@ name: TestPyPI
 on:
   push:
     tags:
-      - 'v*-test'
+      - 'v*-prod'
 
 jobs:
   test:
